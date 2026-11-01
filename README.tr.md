@@ -15,10 +15,10 @@
   <img src="docs/screenshots/app-icon.png" width="96" alt="SKOR! Logo" />
 </p>
 
-| 1. Ana Ekran Paneli | 2. Canlı 1v1 Maç & Saha İlerlemesi | 3. Maç Sonu & Galibiyet |
-|:---:|:---:|:---:|
-| ![Ana Ekran](docs/screenshots/01-home-screen.png) | ![Canlı Maç Ekranı](docs/screenshots/02-game-screen.png) | ![Maç Sonu](docs/screenshots/03-match-result.png) |
-| *Oyuncu seviyesi, ELO puanı ve Günlük Görev kartı* | *Pitch Progress ile paslaşarak kaleye ilerleme tele-çizgisi* | *3 - 2 Maç skoru, +24 ELO artışı ve maç performans raporu* |
+| 1. Ana Ekran Paneli | 2. Canlı 1v1 Maç Ekranı | 3. Maç Sonu Paylaşım Kartı | 4. Profil & Kupa Odası |
+|:---:|:---:|:---:|:---:|
+| ![Ana Ekran](docs/screenshots/01-ana-ekran-dashboard.png) | ![Canlı Maç Ekranı](docs/screenshots/02-canli-mac-game-screen.png) | ![Paylaşım Kartı](docs/screenshots/03-mac-sonu-paylas-karti.png) | ![Kupa Odası](docs/screenshots/04-profil-kupa-odasi.png) |
+| *Günün maçı, yeni oyun kurma, koda katılma ve maç geçmişi* | *Zaman sayaçlı, 4 seçenekli canlı 1v1 bilgi düellosu* | *Galibiyet sonrası Instagram/WhatsApp için skor kartı* | *Oyuncu istatistikleri ve kazanılan rozetler / kupalar* |
 
 ---
 

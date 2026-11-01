@@ -15,10 +15,10 @@
   <img src="docs/screenshots/app-icon.png" width="96" alt="SKOR! App Icon" />
 </p>
 
-| 1. Home Dashboard | 2. Live 1v1 Match & Telestration | 3. Match Victory & XP |
-|:---:|:---:|:---:|
-| ![Home Dashboard](docs/screenshots/01-home-screen.png) | ![Live Match](docs/screenshots/02-game-screen.png) | ![Match Victory](docs/screenshots/03-match-result.png) |
-| *Player rank, ELO rating & daily challenge* | *Miniature pitch progress with dynamic pass animations* | *Match score 3-2, +24 ELO and XP rewards* |
+| 1. Home Dashboard | 2. Live 1v1 Match | 3. Match Recap Card | 4. Profile & Trophy Room |
+|:---:|:---:|:---:|:---:|
+| ![Home Dashboard](docs/screenshots/01-ana-ekran-dashboard.png) | ![Live Match](docs/screenshots/02-canli-mac-game-screen.png) | ![Match Recap](docs/screenshots/03-mac-sonu-paylas-karti.png) | ![Trophy Room](docs/screenshots/04-profil-kupa-odasi.png) |
+| *Daily challenge, game creation & match history* | *Turn-based 1v1 football trivia with countdown timer* | *High-fidelity shareable match victory card* | *Player stats, achievements & trophy collection* |
 
 ---
 
