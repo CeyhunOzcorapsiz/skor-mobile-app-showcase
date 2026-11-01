@@ -1,53 +1,82 @@
-# SKOR! — 1v1 Spor Bilgi Yarışması Mobil Uygulama Vitrini ⚽🏀📱
+# SKOR! — 1v1 Mobil Spor Bilgi Yarışması — Vitrin ⚽📱🏀
 
 [English](README.md) | **Türkçe**
 
-**Arkadaşlarla futbol ve basketbol bilgisini kapıştıran, sıra tabanlı (asenkron) 1v1 mobil bilgi yarışması.**
+**Flutter & Dart ile geliştirilmiş, Firebase Firestore ve Cloud Functions ile desteklenen, saha içi telestration pas animasyonlarına sahip gerçek zamanlı 1v1 sıra tabanlı spor bilgi yarışması oyunu.**
 
-Genel trivia uygulamalarının spordaki yüzeyselliğini aşarak; güncel, derinlikli ve rekabetçi spor tartışmalarını mobil bir oyun deneyimine dönüştüren Flutter ve Firebase mimarisi.
-
-> ℹ️ **Bu Vitrin Hakkında:**  
-> Bu depo **ürün tanıtımı ve mobil mimari portföyü** içindir. Uygulama kaynak kodları (Flutter / Dart widget'ları, Firebase güvenlik kuralları ve backend içerik üretim betikleri) ayrı bir **private** depoda tutulmaktadır. Bu depoda oyun tasarımı (core loop), mimari prensipler, küresel kıyaslama analizleri ve ürün yol haritası yayımlanmaktadır.
+> 🔒 **Bu Vitrin Hakkında:**  
+> Bu depo teknik bir **ürün vitrini ve mimari portföyüdür**. Flutter mobil istemci kaynak kodları ve Firebase altyapısı özel bir depoda korunmaktadır. Bu vitrin oyun döngüsünü, saha ilerleme mekaniğini, Firestore veri akışını ve ekran görüntülerini belgeler.
 
 ---
 
-## 🎮 Temel Oyun Döngüsü (Core Loop)
+## 📱 Mobil Uygulama Ekran Görüntüleri
 
-```mermaid
-flowchart LR
-    A[Oyun Kur & Kategori Seç] --> B[5 Soruyu Cevapla]
-    B --> C[Arkadaşını Davet Et / Bildirim]
-    C --> D[Rakip Aynı 5 Soruyu Yanıtlar]
-    D --> E[Sonuç Ekranı & İstatistikler]
-    E -->|Rövanş Butonu| A
+<p align="center">
+  <img src="docs/screenshots/app-icon.png" width="96" alt="SKOR! Logo" />
+</p>
+
+| 1. Ana Ekran Paneli | 2. Canlı 1v1 Maç & Saha İlerlemesi | 3. Maç Sonu & Galibiyet |
+|:---:|:---:|:---:|
+| ![Ana Ekran](docs/screenshots/01-home-screen.png) | ![Canlı Maç Ekranı](docs/screenshots/02-game-screen.png) | ![Maç Sonu](docs/screenshots/03-match-result.png) |
+| *Oyuncu seviyesi, ELO puanı ve Günlük Görev kartı* | *Pitch Progress ile paslaşarak kaleye ilerleme tele-çizgisi* | *3 - 2 Maç skoru, +24 ELO artışı ve maç performans raporu* |
+
+---
+
+## 🎮 Oyun Döngüsü ve Saha İlerleme (Pitch Progress) Mekaniği
+
+Klasik soru-cevap uygulamalarından farklı olarak **SKOR!**, her soru serisini bir futbol hücumuna dönüştürür:
+
+```
+[Savunma Sahası] ──> [Orta Saha] ──> [3. Bölge] ──> [Ceza Sahası] ──> [⚽ GOL!]
+     (1. Adım)           (2. Adım)         (3. Adım)         (4. Adım)         (5. Adım)
 ```
 
-* **Asenkron Rekabet:** Her iki oyuncunun aynı anda çevrimiçi olmasına gerek yoktur. Bir oyuncu turunu tamamlar, rakibe anlık bildirim gider ve rakip gün içinde kendi turunu oynar.
-* **Saha İlerleme Göstergesi (Pitch Progress):** Her doğru cevapta top sanal sahada rakip kaleye/potaya doğru ilerler; yanlış cevapta top kaybı yaşanır.
-* **Rövanş Mekaniği:** Maç bitiminde doğrudan rövanş teklifiyle oyuncu bağlılığı (retention) maksimize edilir.
+- Sırası gelen oyuncuya hücum başına **5 süreli soru** yöneltilir.
+- **Doğru Cevap:** Top, taktik saha çizgileri üzerinde kaleye doğru 1 adım ilerler.
+- **5'te 5 Başarı:** Hücum **GOL (1-0)** ile sonuçlanır!
+- **Yanlış Cevap:** Rakip savunma araya girer; hücum adımı kaybedilir.
+- **Jokerler:** **50:50 Pas** (2 yanlış şıkkı eler) ve **VAR İncelemesi** (hatalı yanıtta ikinci şans tanır).
+- Maçlar her iki oyuncu için **3'er hücum devresi** sürer; beraberlikte seri penaltı atışlarına geçilir.
 
 ---
 
-## 🏗️ Sistem ve Veri Mimarisi
+## 🏗️ Mimari Topoloji
 
-* **Flutter & Dart:** Tek kod tabanı ile hem iOS hem Android platformlarında akıcı ve yerel (native) 60 FPS performans.
-* **Firebase Cloud Firestore:** Düşük gecikmeli gerçek zamanlı veritabanı. Güvenlik kuralları (Firestore Security Rules) ile oyuncuların cevap anahtarlarına veya tamamlanmamış oyun skorlarına hileli erişimi engellenir.
-* **Günlük Mücadele (Daily Challenge):** Her gün yenilenen ortak soru seti ile küresel liderlik tablosu (leaderboard).
-* **Akıllı Soru Havuzu Üretimi:** Kategori bazlı (Süper Lig, Premier League, NBA, EuroLeague, Dünya Kupası tarihi) doğrulanmış soru mimarisi.
+```mermaid
+flowchart TB
+    subgraph MobileApp["Flutter Mobil İstemci (iOS & Android)"]
+        UI["Maç Ekranı & Telestration Bileşeni"]
+        State["Riverpod Durum Yönetimi"]
+        LocalCache["Çevrimdışı Soru Önbelleği (SQLite/Hive)"]
+    end
+
+    subgraph FirebaseBackend["Firebase Bulut Altyapısı"]
+        Auth["Firebase Anonim & Sosyal Giriş"]
+        Firestore["Firestore Gerçek Zamanlı Dinleyiciler<br/>(Oyun Oturumları, Eşleştirme Havuzu)"]
+        Functions["Cloud Functions<br/>(Hile Koruması, ELO Hesaplama)"]
+    end
+
+    UI --> State
+    State --> LocalCache
+    State -->|WebSocket akışı| Firestore
+    Firestore --> Functions
+    Auth --> State
+```
 
 ---
 
-## 💻 Kullanılan Teknolojiler
+## 🛠 Teknoloji Yığını
 
 | Katman | Teknoloji |
 |---|---|
-| **Mobil İstemci** | Flutter, Dart (iOS & Android) |
-| **Durum Yönetimi** | Provider / Riverpod desenleri |
-| **Backend & Veritabanı**| Firebase Cloud Firestore, Firebase Auth, Cloud Messaging (FCM) |
-| **Test & Kalite** | Flutter Driver, Unit & Widget testleri (oyun akışları, rövanş mantığı) |
-| **Planlama & Analiz** | [docs/PLAN.md](docs/PLAN.md) · [docs/GLOBAL_BENCHMARK.md](docs/GLOBAL_BENCHMARK.md) |
+| **Mobil Çatı** | Flutter 3.x, Dart 3.x (iOS & Android) |
+| **Durum Yönetimi** | Flutter Riverpod |
+| **Backend & Senkronizasyon** | Firebase Firestore (gerçek zamanlı belge akışları), Cloud Functions |
+| **Kimlik & Güvenlik** | Firebase Auth, Sunucu taraflı şifrelenmiş cevap doğrulama |
+| **Görsel & Ses** | Özel tuval (CustomPainter) saha çizimi, Haptic titreşim, karanlık maç teması |
+| **Detaylı Belgeler** | [docs/OYUN-MEKANIGI.md](docs/OYUN-MEKANIGI.md) · [docs/FIRESTORE-SEMA.md](docs/FIRESTORE-SEMA.md) |
 
 ---
 
-## 🔒 Güvenlik ve Gizlilik Bildirimi
-Uygulama kaynak kodları, Firebase API anahtarları ve veritabanı servis hesapları gizli tutulmaktadır.
+## 🔒 Gizlilik Bildirimi
+Telif hakkı içeren Flutter kaynak kodları, soru bankası veri tabanı ve Firebase kuralları gizli tutulmaktadır.

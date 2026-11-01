@@ -1,53 +1,82 @@
-# SKOR! — 1v1 Sports Trivia Mobile App Showcase ⚽🏀📱
+# SKOR! — 1v1 Sports Trivia Mobile App — Showcase ⚽📱🏀
 
 **English** | [Türkçe](README.tr.md)
 
-**An asynchronous turn-based 1v1 sports trivia mobile app where players challenge friends in football and basketball knowledge.**
+**A real-time, turn-based 1v1 sports trivia mobile game built with Flutter & Dart, backed by Firebase Firestore, Cloud Functions, and an interactive football pitch progress telestration loop.**
 
-Engineered with Flutter and Firebase to solve the superficiality of generic trivia apps by delivering deep, localized, and competitive sports trivia tailored for sports fans.
-
-> ℹ️ **About This Showcase:**  
-> This repository is a **product showcase and mobile architecture portfolio**. The complete application source code (Flutter / Dart widgets, Firebase security rules, and question generation pipelines) is maintained in a private repository. This repository highlights the core game loop, architecture principles, global benchmark analysis, and product roadmaps.
+> 🔒 **About This Showcase:**  
+> This repository is a **product showcase and architecture portfolio**. The full Flutter mobile client source code and Firebase Cloud Functions backend are maintained in a private repository. This repository highlights the gameplay loop, telestration widget design, Firestore synchronization, and UI screens.
 
 ---
 
-## 🎮 Core Game Loop
+## 📱 Mobile App Screens & Gameplay Tour
 
-```mermaid
-flowchart LR
-    A[Create Match & Pick Category] --> B[Answer 5 Questions]
-    B --> C[Invite Friend / Push Notification]
-    C --> D[Opponent Answers Same 5 Questions]
-    D --> E[Match Result & Analytics]
-    E -->|Rematch Button| A
+<p align="center">
+  <img src="docs/screenshots/app-icon.png" width="96" alt="SKOR! App Icon" />
+</p>
+
+| 1. Home Dashboard | 2. Live 1v1 Match & Telestration | 3. Match Victory & XP |
+|:---:|:---:|:---:|
+| ![Home Dashboard](docs/screenshots/01-home-screen.png) | ![Live Match](docs/screenshots/02-game-screen.png) | ![Match Victory](docs/screenshots/03-match-result.png) |
+| *Player rank, ELO rating & daily challenge* | *Miniature pitch progress with dynamic pass animations* | *Match score 3-2, +24 ELO and XP rewards* |
+
+---
+
+## 🎮 Game Loop & Pitch Progress Mechanics
+
+Unlike generic trivia apps that simply count points, **SKOR!** simulates a live football attack:
+
+```
+[Defensive Half] ──> [Midfield] ──> [Final Third] ──> [Penalty Box] ──> [⚽ GOAL!]
+      (Step 1)          (Step 2)          (Step 3)           (Step 4)        (Step 5)
 ```
 
-* **Asynchronous Matchmaking:** Players do not need to be online concurrently. One user plays their round, a push notification alerts the friend, and the friend responds on their own schedule.
-* **Pitch Progress Telestration:** Each correct answer advances the ball along a virtual pitch toward the goal/basket; incorrect answers trigger turnovers.
-* **Rematch Loop:** Streamlined rematch triggers closing the retention loop.
+- Each attack turn gives the active player **5 timed questions**.
+- **Correct Answer:** The ball advances one step forward across the tactical pitch markings.
+- **5 out of 5:** The player scores a **GOAL (1-0)**!
+- **Wrong Answer:** The opponent's defense intercepts the ball; the step is lost.
+- **Jokers:** **50:50 Pass** (removes 2 incorrect choices) and **VAR Review** (second chance on a contested call).
+- Matches consist of **3 attacking rounds per player** with sudden-death penalties on a tie.
 
 ---
 
-## 🏗️ System & Data Architecture
+## 🏗️ Architecture Topology
 
-* **Flutter & Dart:** Single cross-platform codebase compiling to native 60 FPS performance on iOS and Android.
-* **Firebase Cloud Firestore:** Low-latency real-time database protected by strict Firestore Security Rules preventing client-side inspection of answer keys or in-progress match scores.
-* **Daily Challenge:** Global synchronized challenge set resetting daily with leaderboard rankings.
-* **Curated Content Generation:** Verified questions categorized across leagues (Premier League, La Liga, Super Lig, NBA, EuroLeague, World Cup history).
+```mermaid
+flowchart TB
+    subgraph MobileApp["Flutter Mobile Client (iOS & Android)"]
+        UI["Match UI & Telestration Widget"]
+        State["Riverpod State Management"]
+        LocalCache["Offline Question Cache (SQLite/Hive)"]
+    end
+
+    subgraph FirebaseBackend["Firebase Cloud Infrastructure"]
+        Auth["Firebase Anonymous / Social Auth"]
+        Firestore["Firestore Real-time Listeners<br/>(Game Sessions, Matchmaking)"]
+        Functions["Cloud Functions<br/>(Anti-Cheat Verification, ELO Calculator)"]
+    end
+
+    UI --> State
+    State --> LocalCache
+    State -->|WebSocket stream| Firestore
+    Firestore --> Functions
+    Auth --> State
+```
 
 ---
 
-## 💻 Tech Stack
+## 🛠 Tech Stack
 
 | Layer | Technology |
 |---|---|
-| **Mobile Client** | Flutter, Dart (iOS & Android) |
-| **State Management** | Provider / Riverpod state architecture |
-| **Cloud & Backend** | Firebase Cloud Firestore, Firebase Auth, Firebase Cloud Messaging (FCM) |
-| **Testing & QA** | Flutter Driver, Unit & Widget test suites (game flows, rematch logic) |
-| **Specifications** | [docs/PLAN.md](docs/PLAN.md) · [docs/GLOBAL_BENCHMARK.md](docs/GLOBAL_BENCHMARK.md) |
+| **Mobile Framework** | Flutter 3.x, Dart 3.x (iOS & Android) |
+| **State Management** | Flutter Riverpod |
+| **Backend & Sync** | Firebase Firestore (real-time document streams), Cloud Functions |
+| **Auth & Security** | Firebase Auth, Server-side question answer validation |
+| **UI & Audio** | Custom pitch canvas painter, Haptic feedback, dark match-night palette |
+| **Specifications** | [docs/OYUN-MEKANIGI.md](docs/OYUN-MEKANIGI.md) · [docs/FIRESTORE-SEMA.md](docs/FIRESTORE-SEMA.md) |
 
 ---
 
 ## 🔒 Confidentiality Notice
-Proprietary mobile code, Firebase API keys, and administrative credentials remain private.
+Proprietary Flutter client code, question banking database, and Firebase backend rules remain private.
